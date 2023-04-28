@@ -1,1 +1,234 @@
-"{}"
+{
+    "cookies": [
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1716366112,
+            "httpOnly": false,
+            "name": "__gads",
+            "path": "/",
+            "sameSite": "Lax",
+            "secure": false,
+            "value": "ID=69b57b776a54bec5:T=1682670112:S=ALNI_MYc9rb3M6mF0ClfhtxnOddydW5E1A"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1717230110,
+            "httpOnly": false,
+            "name": "_ga_NB4815X645",
+            "path": "/",
+            "sameSite": "Lax",
+            "secure": false,
+            "value": "GS1.1.1682670098.1.1.1682670110.0.0.0"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "httpOnly": false,
+            "name": "forum_token",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkZyaWdnZSIsImlkIjoiODEwMTk5NjgyIiwiYXZhdGFyVXJsIjoiaHR0cHM6Ly9hc3NldHMub25saW5lc29jY2VybWFuYWdlci5jb20vQXZhdGFycy9Vc2Vycy8zLmpwZyIsImxhbmd1YWdlY29kZSI6ImVuIiwibmJmIjoxNjgyNjcwMTA4LCJleHAiOjE2ODMyNzQ5MDgsImlhdCI6MTY4MjY3MDEwOH0.96zgHZpxx-3CVTidOd8qOc3y6gBb8igh-PNbPIzNhFM"
+        },
+        {
+            "domain": "en.onlinesoccermanager.com",
+            "expiry": 1714292508,
+            "httpOnly": false,
+            "name": "stayLoggedIn",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "true"
+        },
+        {
+            "domain": "en.onlinesoccermanager.com",
+            "expiry": 1714292508,
+            "httpOnly": false,
+            "name": "access_token",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjgxMDE5OTY4MiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJGcmlnZ2UiLCJ3b3JsZCI6IjEiLCJ0ZWFtIjpbIjg1NDEzOTA5LDEiLCIyNTgyNjgwOSwxOCJdLCJuYmYiOjE2ODI2NzAxMDgsImV4cCI6MTY4MjY3MTMwOCwiaXNzIjoiT1NNLkF1dGhlbnRpY2F0aW9uIn0.-TK8ihPRkM2pQoQ3IPQC_gZAu2J9KtCpFVNAO-4LEEA"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1716366112,
+            "httpOnly": false,
+            "name": "__gpi",
+            "path": "/",
+            "sameSite": "Lax",
+            "secure": false,
+            "value": "UID=00000bf19ecd0381:T=1682670112:RT=1682670112:S=ALNI_MaeawSDTRjjbd0sOg5hn0IX7TLbBQ"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1717230110,
+            "httpOnly": false,
+            "name": "_ga",
+            "path": "/",
+            "sameSite": "Lax",
+            "secure": false,
+            "value": "GA1.1.1806143930.1682670099"
+        },
+        {
+            "domain": "en.onlinesoccermanager.com",
+            "httpOnly": false,
+            "name": "bugsnagSession",
+            "path": "/",
+            "sameSite": "Lax",
+            "secure": false,
+            "value": "{\"id\":\"clh0abzdu000035c27ev8mjvs\",\"startedAt\":\"2023-04-28T08:21:40.962Z\",\"events\":{\"handled\":0,\"unhandled\":0}}"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1714206109,
+            "httpOnly": false,
+            "name": "HasLoggedInBefore",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "true"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1682670159,
+            "httpOnly": false,
+            "name": "_dc_gtm_UA-21445918-9",
+            "path": "/",
+            "sameSite": "Lax",
+            "secure": false,
+            "value": "1"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1714206097,
+            "httpOnly": false,
+            "name": "personalizedAdsSettingLastAskedTimestamp",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "1682670097"
+        },
+        {
+            "domain": "en.onlinesoccermanager.com",
+            "expiry": 1714206100,
+            "httpOnly": false,
+            "name": "DefaultCultureCode",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "en-GB"
+        },
+        {
+            "domain": "en.onlinesoccermanager.com",
+            "expiry": 1714292508,
+            "httpOnly": false,
+            "name": "refresh_token",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "dac815d7-b535-4dcc-8518-70a1b9ec7ab0"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1714206097,
+            "httpOnly": false,
+            "name": "personalizedAdsEnabled",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "true"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1714206097,
+            "httpOnly": false,
+            "name": "isPrivacyNoticeAccepted",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "true"
+        },
+        {
+            "domain": ".en.onlinesoccermanager.com",
+            "expiry": 1682756510,
+            "httpOnly": false,
+            "name": "_gid",
+            "path": "/",
+            "sameSite": "Lax",
+            "secure": false,
+            "value": "GA1.3.1571541361.1682670099"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1714206094,
+            "httpOnly": false,
+            "name": "personalizedAdsAskAmount",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "1"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1682756499,
+            "httpOnly": false,
+            "name": "_gid",
+            "path": "/",
+            "sameSite": "Lax",
+            "secure": false,
+            "value": "GA1.2.1571541361.1682670099"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1714292494,
+            "httpOnly": false,
+            "name": "CultureCode",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "en-GB"
+        },
+        {
+            "domain": "en.onlinesoccermanager.com",
+            "expiry": 1714292511,
+            "httpOnly": false,
+            "name": "session",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "%7B%22userId%22%3A810199682%2C%22login%22%3A%22Frigge%22%2C%22leagueId%22%3A0%2C%22teamId%22%3A0%2C%22leagueTypeId%22%3A0%2C%22leagueTypeName%22%3A%22%22%2C%22teamName%22%3A%22%22%2C%22slotIndex%22%3A0%2C%22serverDownForCurrentSlotIndex%22%3Afalse%2C%22hasMultipleSlots%22%3Atrue%2C%22hasInvites%22%3Afalse%2C%22hasBossCoinWallet%22%3Atrue%2C%22isReservedForFantasyLeague%22%3Afalse%2C%22leagueTheme%22%3A0%2C%22appTheme%22%3A0%2C%22leagueMode%22%3A0%7D"
+        },
+        {
+            "domain": ".en.onlinesoccermanager.com",
+            "expiry": 1717230110,
+            "httpOnly": false,
+            "name": "_ga",
+            "path": "/",
+            "sameSite": "Lax",
+            "secure": false,
+            "value": "GA1.3.1806143930.1682670099"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1717230094,
+            "httpOnly": false,
+            "name": "isFromGdprOptInCountry",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "true"
+        },
+        {
+            "domain": ".onlinesoccermanager.com",
+            "expiry": 1682671892,
+            "httpOnly": true,
+            "name": "__cf_bm",
+            "path": "/",
+            "sameSite": "None",
+            "secure": true,
+            "value": "xHgVK_qXoxRf8q2zo7KeChShQVVRDMul3wNKVuLmTlA-1682670092-0-ATZcY5aB9XJWhMeTY5EJi6hsYCJRUbaMFlnAdWIzaKCYIdTTs9oLd+1YVr4n1s7w76EF4pwRHBkMejEuTQORv+I="
+        }
+    ],
+    "access_token": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjgxMDE5OTY4MiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJGcmlnZ2UiLCJ3b3JsZCI6IjEiLCJ0ZWFtIjpbIjg1NDEzOTA5LDEiLCIyNTgyNjgwOSwxOCJdLCJuYmYiOjE2ODI2NzAxMDgsImV4cCI6MTY4MjY3MTMwOCwiaXNzIjoiT1NNLkF1dGhlbnRpY2F0aW9uIn0.-TK8ihPRkM2pQoQ3IPQC_gZAu2J9KtCpFVNAO-4LEEA",
+    "refresh_token": "dac815d7-b535-4dcc-8518-70a1b9ec7ab0"
+}

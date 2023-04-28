@@ -121,10 +121,15 @@ def TimeCheck():
         time[i]["currentTimestamp"] = datetime.fromtimestamp(time[i]["currentTimestamp"])
         time[i]["finishedTimestamp"] = datetime.fromtimestamp(time[i]["finishedTimestamp"]) 
         if time[i]["finishedTimestamp"] < datetime.now():
-            print(time[i]["title"])
             if  "coach" in time[i]["title"]:
                 #data = session.put("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions/" + #trovare cosa mettere qui +"/claim", headers=headers)
                 print()
+            else: print(time[i]["title"] + " has finished")
+        elif time[i]["finishedTimestamp"] > datetime.now():
+            if  "coach" in time[i]["title"]:
+                print(time[i]["title"] + " is busy until " + str(time[i]["finishedTimestamp"]))
+            elif "Your next match" in time[i]["title"]:
+                print(time[i]["title"] + " will be " + str(time[i]["finishedTimestamp"]))
 
 def Train(Giocatore : str, obiettivo : int):
     headers = {
