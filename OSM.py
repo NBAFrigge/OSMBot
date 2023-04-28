@@ -152,6 +152,9 @@ def Train(Giocatore : str, obiettivo : int):
         if giocatore["player"]["name"] == Giocatore:
             playerId = str(giocatore["player"]["id"])
             position = str(giocatore["player"]["position"])
+            if giocatore["player"]["statDef"] >= obiettivo or giocatore["player"]["statOvr"] >= obiettivo or giocatore["player"]["statAtt"] >= obiettivo:
+                print(giocatore["player"]["name"] +" is already at the desired level")
+                return 0
             break
     payload = "playerId=" + playerId + "&trainer=" + position + "&timerGameSettingId=20"
     data = session.post("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions", headers=headers, data=payload)
