@@ -14,25 +14,22 @@ from datetime import datetime
 import json
 import os.path
 
-def find_between( s, first, last ):
-    try:
-        start = s.index( first ) + len( first )
-        end = s.index( last, start )
-        return ( s[start:end] )
-    except ValueError:
-        return ( "" )
-
 session = requests.Session()
 clientsecret = ""
 refreshtoken = ""
 clientid = ""
 access_token = ""
 global giocatori
+empty = {}
 
 def StartUp():
     if not os.path.exists('Session.json') or os.stat('Session.json').st_size == 0:
         with open("Session.json", 'w') as outfile:
-            outfile.write(json.dumps("{}", indent = 4))
+            outfile.write(json.dumps(empty, indent = 4))
+    if not os.path.exists('Lineup.json') or os.stat('Lineup.json').st_size == 0:
+        with open("Lineup.json", 'w') as outfile:
+            outfile.write(json.dumps(empty, indent = 4))
+    
 
 # OSM API
 def login(userName : str, password : str):
@@ -82,23 +79,37 @@ def login(userName : str, password : str):
                     break
 
 def getTeam():
-    headers = {
-        "Host": "web-api.onlinesoccermanager.com",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/112.0",
-        "Accept": "application/json; charset=utf-8",
-        "Accept-Language": "en-GB, en-GB",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Authorization": "Bearer " + access_token,
-        "Content-Type": "application/json; charset=utf-8",
-        "PlatformId": "11",
-        "AppVersion": "3.177.1",
-        "Origin": "https://en.onlinesoccermanager.com",
-        "Connection": "keep-alive",
-        "Referer": "https://en.onlinesoccermanager.com/",
-    }
-    data = session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/team/18/transfers", headers=headers)
-    giocatori = data.text
-    return eval(giocatori.replace("true", "True").replace("false", "False").replace("null", "None"))
+    while 1:
+        headers = {
+            "Host": "web-api.onlinesoccermanager.com",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/112.0",
+            "Accept": "application/json; charset=utf-8",
+            "Accept-Language": "en-GB, en-GB",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Authorization": "Bearer " + access_token,
+            "Content-Type": "multipart/mixed; boundary=batch_5528b742-a7d1-409a-a607-c24e4918f2c2",
+            "PlatformId": "11",
+            "AppVersion": "3.177.1",
+            "Origin": "https://en.onlinesoccermanager.com",
+            "Connection": "keep-alive",
+            "Referer": "https://en.onlinesoccermanager.com/",
+        }
+        giocatori = (session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/players", headers=headers).text)
+        # data = session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/team/18/transfers", headers=headers)
+        # giocatori = data.text
+        if giocatori == "":
+            login("Frigge", "Nipotino04?")
+        else : break
+    giocatori =  eval(giocatori.replace("true", "True").replace("false", "False").replace("null", "None"))
+    formazione = []
+    for g in giocatori:
+        if not g["lineup"] == 0 and not g["lineup"] > 11:
+            print(g["name"], g["lineup"])
+            tit = {"nome" : (g["name"]), "pos" : g["lineup"] }
+            formazione.append(tit)
+    with open("Lineup.json", "w") as f:
+        f.write(json.dumps(formazione, indent = 4))
+    return giocatori
 
 
 def TimeCheck():
@@ -122,6 +133,7 @@ def TimeCheck():
         time[i]["finishedTimestamp"] = datetime.fromtimestamp(time[i]["finishedTimestamp"]) 
         if time[i]["finishedTimestamp"] < datetime.now():
             if  "coach" in time[i]["title"]:
+                #Controllare quando metti in allemamento che ti dice
                 #data = session.put("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions/" + #trovare cosa mettere qui +"/claim", headers=headers)
                 print()
             else: print(time[i]["title"] + " has finished")
@@ -179,6 +191,7 @@ else:
     refreshtoken = dataSession["refresh_token"]
 giocatori = getTeam()
 TimeCheck()
-Train("Donnarumma", 88)
+#Train("Donnarumma", 88)
 print()
+190656353
 
