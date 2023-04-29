@@ -101,16 +101,17 @@ def getTeam():
             login("Frigge", "Nipotino04?")
         else : break
     giocatori =  eval(giocatori.replace("true", "True").replace("false", "False").replace("null", "None"))
+    return giocatori
+
+def getLineup():
     formazione = []
     for g in giocatori:
         if not g["lineup"] == 0 and not g["lineup"] > 11:
             print(g["name"], g["lineup"])
-            tit = {"nome" : (g["name"]), "pos" : g["lineup"] }
+            tit = {"id" : g["id"], "nome" : (g["name"]), "pos" : g["lineup"],  }
             formazione.append(tit)
     with open("Lineup.json", "w") as f:
         f.write(json.dumps(formazione, indent = 4))
-    return giocatori
-
 
 def TimeCheck():
     headers = {
@@ -131,17 +132,26 @@ def TimeCheck():
     for i in range(0, len(time)):
         time[i]["currentTimestamp"] = datetime.fromtimestamp(time[i]["currentTimestamp"])
         time[i]["finishedTimestamp"] = datetime.fromtimestamp(time[i]["finishedTimestamp"]) 
-        if time[i]["finishedTimestamp"] < datetime.now():
-            if  "coach" in time[i]["title"]:
-                #Controllare quando metti in allemamento che ti dice
-                #data = session.put("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions/" + #trovare cosa mettere qui +"/claim", headers=headers)
-                print()
-            else: print(time[i]["title"] + " has finished")
+        if time[i]["finishedTimestamp"] < datetime.now() and not "coach" in time[i]["title"] :
+           print(time[i]["title"] + " has finished")
         elif time[i]["finishedTimestamp"] > datetime.now():
             if  "coach" in time[i]["title"]:
                 print(time[i]["title"] + " is busy until " + str(time[i]["finishedTimestamp"]))
             elif "Your next match" in time[i]["title"]:
                 print(time[i]["title"] + " will be " + str(time[i]["finishedTimestamp"]))
+                if ((time[i]["finishedTimestamp"] - datetime.now()).total_seconds() / 3600 < 8):
+                    giocatori = getTeam()
+                    lineup = ""
+                    with open("Lineup.json", "r") as f:
+                        lineup = json.loads(f.read())
+                    for g in giocatori:
+                        if g["lineup"] == 0:
+                            for l in lineup:
+                                if l["id"] == g["id"]:
+                                    payload = "lineup=" + str(l["pos"])
+                                    data = session.put("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/players/"+ str(l["id"]) +"/lineup", headers=headers, data=payload)
+                                    break
+    GetTrained()       
 
 def Train(Giocatore : str, obiettivo : int):
     headers = {
@@ -174,6 +184,27 @@ def Train(Giocatore : str, obiettivo : int):
         print("Training started")
     else:
         print("Trainer is busy with another player")
+    
+def GetTrained():
+    headers = {
+        "Host": "web-api.onlinesoccermanager.com",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/112.0",
+        "Accept": "application/json; charset=utf-8",
+        "Accept-Language": "en-GB, en-GB",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Authorization": "Bearer " + access_token,
+        "Content-Type": "application/json; charset=utf-8",
+        "PlatformId": "11",
+        "AppVersion": "3.177.1",
+        "Origin": "https://en.onlinesoccermanager.com",
+        "Connection": "keep-alive",
+        "Referer": "https://en.onlinesoccermanager.com/",
+    }
+    data = eval((session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions/ongoing", headers=headers).text).replace("false", "False").replace("true", "True").replace("null", "None"))
+    for n in data:
+        if datetime.fromtimestamp(n["countdownTimer"]["finishedTimestamp"]) < datetime.now():
+            print(n["countdownTimer"]["title"] + " finished")
+            data = session.put("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions/" + str(n["id"]) + "/claim", headers = headers)
 
 StartUp()
 dataSession = ""
@@ -190,8 +221,11 @@ else:
     access_token = dataSession["access_token"]
     refreshtoken = dataSession["refresh_token"]
 giocatori = getTeam()
-TimeCheck()
-#Train("Donnarumma", 88)
+#getLineup()
+while 1:
+    #login("Frigge", "Nipotino04?")
+    TimeCheck()
+    sleep(600)
 print()
-190656353
+
 
