@@ -121,7 +121,7 @@ def TimeCheck():
         "Accept-Language": "en-GB, en-GB",
         "Accept-Encoding": "gzip, deflate, br",
         "Authorization": "Bearer " + access_token,
-        "Content-Type": "application/json; charset=utf-8",
+        "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
         "PlatformId": "11",
         "AppVersion": "3.177.1",
         "Origin": "https://en.onlinesoccermanager.com",
@@ -140,6 +140,7 @@ def TimeCheck():
             elif "Your next match" in time[i]["title"]:
                 print(time[i]["title"] + " will be " + str(time[i]["finishedTimestamp"]))
                 if ((time[i]["finishedTimestamp"] - datetime.now()).total_seconds() / 3600 < 8):
+                    GetTrained()
                     giocatori = getTeam()
                     lineup = ""
                     with open("Lineup.json", "r") as f:
@@ -200,7 +201,10 @@ def GetTrained():
         "Connection": "keep-alive",
         "Referer": "https://en.onlinesoccermanager.com/",
     }
-    data = eval((session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions/ongoing", headers=headers).text).replace("false", "False").replace("true", "True").replace("null", "None"))
+    data = session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions/ongoing", headers=headers).text
+    if data == "":
+        return 0
+    data = eval((data).replace("false", "False").replace("true", "True").replace("null", "None"))
     for n in data:
         if datetime.fromtimestamp(n["countdownTimer"]["finishedTimestamp"]) < datetime.now():
             print(n["countdownTimer"]["title"] + " finished")
@@ -223,7 +227,7 @@ else:
 giocatori = getTeam()
 #getLineup()
 while 1:
-    #login("Frigge", "Nipotino04?")
+    login("Frigge", "Nipotino04?")
     TimeCheck()
     sleep(600)
 print()
