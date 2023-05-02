@@ -107,8 +107,19 @@ def getLineup():
     formazione = []
     for g in giocatori:
         if not g["lineup"] == 0 and not g["lineup"] > 11:
-            print(g["name"], g["lineup"])
-            tit = {"id" : g["id"], "nome" : (g["name"]), "pos" : g["lineup"],  }
+            ovr = ""
+            stat = ""
+            match  g["position"]:
+                case 1:
+                    ovr = g["statAtt"]
+                case 2:
+                    ovr = g["statOvr"]
+                case 3:
+                    ovr = g["statDef"]
+                case 4:
+                    ovr = g["statDef"]
+
+            tit = {"id" : g["id"], "nome" : (g["name"]), "pos" : g["lineup"],  "ovr" : ovr, "obj" : 100, "role" : g["position"]}
             formazione.append(tit)
     with open("Lineup.json", "w") as f:
         f.write(json.dumps(formazione, indent = 4))
@@ -152,9 +163,37 @@ def TimeCheck():
                                     payload = "lineup=" + str(l["pos"])
                                     data = session.put("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/players/"+ str(l["id"]) +"/lineup", headers=headers, data=payload)
                                     break
-    GetTrained()       
+                else:
+                    lineup = ""
+                    with open("Lineup.json", "r") as f:
+                        lineup = json.loads(f.read())
+                    best = [{"ovr" : 99, "id" : 0, "role" : 1}, {"ovr" : 99, "id" : 0, "role" : 2}, {"ovr" : 99, "id" : 0, "role" : 3}, {"ovr" : 99, "id" : 0, "role" : 4}]
+                    for g in lineup:
+                        match g["role"]:
+                            case 1:
+                                if g["obj"] - g["ovr"] < best[0]["ovr"]:
+                                    best[0]["ovr"] = int(g["ovr"] - g["obj"])
+                                    best[0]["id"] = g["id"]
+                            case 2:
+                                if int(g["ovr"])  - int(g["ovr"]) < best[1]["ovr"]:
+                                    best[1]["ovr"] = int(g["ovr"] - g["obj"])
+                                    best[1]["id"] = g["id"]
+                            case 3:
+                                if int(g["ovr"])  - int(g["ovr"]) < best[2]["ovr"]:
+                                    best[2]["ovr"] = g["ovr"] - g["obj"]
+                                    best[2]["id"] = g["id"]
+                            case 4:
+                                if int(g["ovr"])  - int(g["ovr"]) < best[3]["ovr"]:
+                                    best[3]["ovr"] = int(g["ovr"] - g["obj"])
+                                    best[3]["id"] = g["id"]
+                    for b in best:
+                        Train(b["id"], b["role"])
+                    
 
-def Train(Giocatore : str, obiettivo : int):
+                        
+                        
+
+def Train(playerId : int, position : int):
     headers = {
         "Host": "web-api.onlinesoccermanager.com",
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/112.0",
@@ -169,17 +208,8 @@ def Train(Giocatore : str, obiettivo : int):
         "Connection": "keep-alive",
         "Referer": "https://en.onlinesoccermanager.com/",
     }
-    playerId = ""
-    position  = ""
-    for giocatore in giocatori:
-        if giocatore["player"]["name"] == Giocatore:
-            playerId = str(giocatore["player"]["id"])
-            position = str(giocatore["player"]["position"])
-            if giocatore["player"]["statDef"] >= obiettivo or giocatore["player"]["statOvr"] >= obiettivo or giocatore["player"]["statAtt"] >= obiettivo:
-                print(giocatore["player"]["name"] +" is already at the desired level")
-                return 0
-            break
-    payload = "playerId=" + playerId + "&trainer=" + position + "&timerGameSettingId=20"
+    
+    payload = "playerId=" + str(playerId) + "&trainer=" + str(position) + "&timerGameSettingId=20"
     data = session.post("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions", headers=headers, data=payload)
     if data.status_code == 200:
         print("Training started")
@@ -227,7 +257,7 @@ else:
 giocatori = getTeam()
 #getLineup()
 while 1:
-    login("Frigge", "Nipotino04?")
+    #login("Frigge", "Nipotino04?")
     TimeCheck()
     sleep(600)
 print()
