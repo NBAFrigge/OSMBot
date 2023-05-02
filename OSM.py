@@ -203,7 +203,7 @@ def GetTrained():
     }
     data = session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions/ongoing", headers=headers).text
     if data == "":
-        return 0
+        return 0    
     data = eval((data).replace("false", "False").replace("true", "True").replace("null", "None"))
     for n in data:
         if datetime.fromtimestamp(n["countdownTimer"]["finishedTimestamp"]) < datetime.now():
