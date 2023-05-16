@@ -187,11 +187,7 @@ def TimeCheck():
                                     best[3]["ovr"] = int(g["ovr"] - g["obj"])
                                     best[3]["id"] = g["id"]
                     for b in best:
-                        Train(b["id"], b["role"])
-                    
-
-                        
-                        
+                        Train(b["id"], b["role"])                     
 
 def Train(playerId : int, position : int):
     headers = {
@@ -240,6 +236,31 @@ def GetTrained():
             print(n["countdownTimer"]["title"] + " finished")
             data = session.put("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions/" + str(n["id"]) + "/claim", headers = headers)
 
+#sistemare
+def getChampionship():
+    headers = {
+        "Host": "web-api.onlinesoccermanager.com",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/112.0",
+        "Accept": "application/json; charset=utf-8",
+        "Accept-Language": "en-GB, en-GB",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Authorization": "Bearer " + access_token,
+        "Content-Type": "multipart/mixed; boundary=batch_5528b742-a7d1-409a-a607-c24e4918f2c2",
+        "PlatformId": "11",
+        "AppVersion": "3.177.1",
+        "Origin": "https://en.onlinesoccermanager.com",
+        "Connection": "keep-alive",
+        "Referer": "https://en.onlinesoccermanager.com/",
+    }
+    marda = (session.get("https://web-api.onlinesoccermanager.com/api/v1/user/accounts", headers=headers))
+    data = (session.get("https://web-api.onlinesoccermanager.com/api/v1/user/accounts", headers=headers).json())["teamSlots"]
+    for team in data:
+        if "team" in team:
+            print(team["team"]["name"])
+            
+
+
+
 StartUp()
 dataSession = ""
 with open("Session.json", "r") as f:
@@ -254,6 +275,7 @@ else:
         session.cookies.set(cookie['name'], cookie['value'])
     access_token = dataSession["access_token"]
     refreshtoken = dataSession["refresh_token"]
+#getChampionship()
 giocatori = getTeam()
 #getLineup()
 while 1:
