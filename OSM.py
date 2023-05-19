@@ -13,6 +13,7 @@ from seleniumwire.utils import decode
 from datetime import datetime
 import json
 import os.path
+import gzip
 
 session = requests.Session()
 clientsecret = ""
@@ -20,7 +21,16 @@ refreshtoken = ""
 clientid = ""
 access_token = ""
 global giocatori
+global userId
 empty = {}
+
+def findBetween(s, first, last ):
+    try:
+        start = s.index( first ) + len( first )
+        end = s.index( last, start )
+        return s[start:end]
+    except ValueError:
+        return ""
 
 def StartUp():
     if not os.path.exists('Session.json') or os.stat('Session.json').st_size == 0:
@@ -39,8 +49,9 @@ def login(userName : str, password : str):
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-    found = False
-    while not found:
+    found1 = False
+    found2 = False
+    while not found2 and not found1:
             driver.get("https://www.onlinesoccermanager.com/Login")
             sleep(3)
             WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.XPATH, r'//*[@id="page-privacynotice"]/div/div/div[2]/div[3]/div[2]/div[1]/div[1]/button')))
@@ -56,26 +67,34 @@ def login(userName : str, password : str):
             sleep(5)
             
             for request in driver.requests:
-                if "token" in request.url and request.method == "POST":
-                    body = decode(request.response.body, request.response.headers.get('Content-Encoding', 'identity'))
-                    data = eval(body)
-                    global refreshtoken
-                    refreshtoken = data["refresh_token"]
-                    global access_token
-                    access_token = data["access_token"]
-                    print("Logged in")
-                    datasession = {}
-                    biscotti = []
-                    for cookie in driver.get_cookies():
-                        session.cookies.set(cookie['name'], cookie['value'])
-                        biscotti.append(cookie)
-                    datasession["cookies"] = biscotti
-                    datasession["access_token"] = access_token
-                    datasession["refresh_token"] = refreshtoken
-                    with open("Session.json", 'w') as outfile:
-                        outfile.write(json.dumps(datasession, indent = 4))
+                if not found1: 
+                    if "https://web-api.onlinesoccermanager.com/api/token" == request.url and request.method == "POST":
+                        body = decode(request.response.body, request.response.headers.get('Content-Encoding', 'identity'))
+                        data = eval(body)
+                        global refreshtoken
+                        refreshtoken = data["refresh_token"]
+                        global access_token
+                        access_token = data["access_token"]
+                        print("Logged in")
+                        datasession = {}
+                        biscotti = []
+                        for cookie in driver.get_cookies():
+                            session.cookies.set(cookie['name'], cookie['value'])
+                            biscotti.append(cookie)
+                        datasession["cookies"] = biscotti
+                        datasession["access_token"] = access_token
+                        datasession["refresh_token"] = refreshtoken
+                        with open("Session.json", 'w') as outfile:
+                            outfile.write(json.dumps(datasession, indent = 4))
+                        found1  = True
+                if not found2:
+                    if "batch" in request.url and request.method == "POST" and ("GET /v1/user/accounts HTTP/1.1").encode() in request.body:
+                        body = gzip.decompress(request.response.body)
+                        body = body.decode("utf-8")
+                        userId = findBetween(body, '"masterAccountId":', ',"partnerNr":')
+                        found2 = True
+                if found1 and found2:
                     driver.quit()
-                    found  = True
                     break
 
 def getTeam():
@@ -239,26 +258,33 @@ def GetTrained():
 #sistemare
 def getChampionship():
     headers = {
-        "Host": "web-api.onlinesoccermanager.com",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/112.0",
-        "Accept": "application/json; charset=utf-8",
-        "Accept-Language": "en-GB, en-GB",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Authorization": "Bearer " + access_token,
-        "Content-Type": "multipart/mixed; boundary=batch_5528b742-a7d1-409a-a607-c24e4918f2c2",
-        "PlatformId": "11",
-        "AppVersion": "3.177.1",
-        "Origin": "https://en.onlinesoccermanager.com",
-        "Connection": "keep-alive",
-        "Referer": "https://en.onlinesoccermanager.com/",
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0',
+        'Accept': 'application/json; charset=utf-8',
+        'Accept-Language': 'en-GB, en-GB',
+        'Content-Type': 'multipart/mixed; boundary=batch_dd694023-1aeb-4e90-a7a6-ce16436f1040',
+        'PlatformId': '11',
+        'AppVersion': '3.179.0',
+        'Authorization': 'Bearer ' + access_token,
+        'Origin': 'https://en.onlinesoccermanager.com',
+        'Connection': 'keep-alive',
+        'Referer': 'https://en.onlinesoccermanager.com/',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-site',
     }
-    marda = (session.get("https://web-api.onlinesoccermanager.com/api/v1/user/accounts", headers=headers))
-    data = (session.get("https://web-api.onlinesoccermanager.com/api/v1/user/accounts", headers=headers).json())["teamSlots"]
-    for team in data:
-        if "team" in team:
-            print(team["team"]["name"])
+    team = eval(((session.get("https://web-api.onlinesoccermanager.com/api/v1.1/users/" + userId + "?fields=Gdpr%2CEmail%2CTeamSlots%2CImages%2CStats", headers=headers)).text).replace("false", "False").replace("true", "True").replace("null", "None"))["teamSlots"]
+    for t in team:
+        if "team" in t:
+            print( t["team"]["name"])
+
+    print()
+    # data = (session.get("https://web-api.onlinesoccermanager.com/api/v1.1/user?fields=teamslots%2Cemail%2Cprofile%2Cconnections", headers=headers).json())["teamSlots"]
+    # for team in data:
+    #     if "team" in team:
+    #         print(team["team"]["name"])
             
 
+login("Frigge", "Nipotino04?")
 
 
 StartUp()
@@ -275,7 +301,7 @@ else:
         session.cookies.set(cookie['name'], cookie['value'])
     access_token = dataSession["access_token"]
     refreshtoken = dataSession["refresh_token"]
-#getChampionship()
+getChampionship()
 giocatori = getTeam()
 #getLineup()
 while 1:
