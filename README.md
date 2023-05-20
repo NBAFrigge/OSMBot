@@ -1,6 +1,7 @@
 # OSMbot
 
-OSMbot is a bot that automates player training in an online soccer game called OSM (Online Soccer Manager). The bot allows users to set a specific goal in the `Lineup.json` file, and it will train the players until that goal is achieved.
+OSMbot is a bot that automates player training in an online soccer game called OSM (Online Soccer Manager). The bot allows users to set a specific goal in the `Lineup.json` file, and it will train the players until that goal is achieved. If the training is not completed before a match, the bot will skip the training session, set up the lineup, and wait for the match to finish.
+
 
 ## Requirements
 
