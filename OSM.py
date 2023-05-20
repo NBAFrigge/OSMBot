@@ -24,6 +24,8 @@ global giocatori
 global userId
 global TeamId
 global LeagueId
+global User
+global Pwd
 empty = {}
 
 def findBetween(s, first, last ):
@@ -41,8 +43,26 @@ def StartUp():
     if not os.path.exists('Lineup.json') or os.stat('Lineup.json').st_size == 0:
         with open("Lineup.json", 'w') as outfile:
             outfile.write(json.dumps(empty, indent = 4))
+    if not os.path.exists('Credential.json') or os.stat('Credential.json').st_size == 0:
+        with open("Credential.json", 'w') as outfile:
+            credential = {"username": "", "password": ""}
+            outfile.write(json.dumps(credential, indent = 4))
+    cred = {}
+    with open("Credential.json", 'r') as outfile:
+        cred = (json.load(outfile))
+        if cred["username"] == "":
+            cred["username"] = input("Insert username: ")
+        if cred["password"] == "":
+            cred["password"] = input("Insert password: ")
+        global User
+        User = cred["username"]
+        global Pwd
+        Pwd = cred["password"]
+    with open("Credential.json", 'w') as outfile:
+        outfile.write(json.dumps(cred, indent = 4))
     
-
+        
+  
 # OSM API
 def login(userName : str, password : str):
     options = webdriver.ChromeOptions()
@@ -126,7 +146,7 @@ def getTeam():
         }
         giocatori = (session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/" +  LeagueId+ "/teams/"+ TeamId +"/players", headers=headers).text)
         if giocatori == "":
-            login("Frigge", "Nipotino04?")
+            login(User, Pwd)
         else : break
     giocatori =  eval(giocatori.replace("true", "True").replace("false", "False").replace("null", "None"))
     return giocatori
@@ -305,9 +325,9 @@ dataSession = ""
 with open("Session.json", "r") as f:
     dataSession = json.load(f)
 if dataSession == "{}":
-    login("Frigge", "Nipotino04?")
+    login(User, Pwd)
 elif not "cookies" in dataSession.keys() or not "access_token" in dataSession.keys() or  not "refresh_token" in dataSession.keys() or not "userId" in dataSession.keys():
-    login("Frigge", "Nipotino04?")
+    login(User, Pwd)
 else:
     print("Session found!")
     for cookie in dataSession["cookies"]:
@@ -319,7 +339,7 @@ getChampionship()
 giocatori = getTeam()
 #getLineup()
 while 1:
-    #login("Frigge", "Nipotino04?")
+    #login(User, Pwd)
     TimeCheck()
     sleep(600)
 print()
