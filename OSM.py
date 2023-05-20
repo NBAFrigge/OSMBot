@@ -22,6 +22,8 @@ clientid = ""
 access_token = ""
 global giocatori
 global userId
+global TeamId
+global LeagueId
 empty = {}
 
 def findBetween(s, first, last ):
@@ -81,6 +83,9 @@ def login(userName : str, password : str):
                         for cookie in driver.get_cookies():
                             session.cookies.set(cookie['name'], cookie['value'])
                             biscotti.append(cookie)
+                        with open("Session.json", 'r') as outfile:
+                            datasession = json.load(outfile)
+                        
                         datasession["cookies"] = biscotti
                         datasession["access_token"] = access_token
                         datasession["refresh_token"] = refreshtoken
@@ -92,6 +97,12 @@ def login(userName : str, password : str):
                         body = gzip.decompress(request.response.body)
                         body = body.decode("utf-8")
                         userId = findBetween(body, '"masterAccountId":', ',"partnerNr":')
+                        datasession = {}
+                        with open("Session.json", 'r') as outfile:
+                            datasession = json.load(outfile)
+                        with open("Session.json", 'w') as outfile:
+                            datasession["userId"] = userId
+                            outfile.write(json.dumps(datasession, indent = 4))
                         found2 = True
                 if found1 and found2:
                     driver.quit()
@@ -113,9 +124,7 @@ def getTeam():
             "Connection": "keep-alive",
             "Referer": "https://en.onlinesoccermanager.com/",
         }
-        giocatori = (session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/players", headers=headers).text)
-        # data = session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/team/18/transfers", headers=headers)
-        # giocatori = data.text
+        giocatori = (session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/" +  LeagueId+ "/teams/"+ TeamId +"/players", headers=headers).text)
         if giocatori == "":
             login("Frigge", "Nipotino04?")
         else : break
@@ -158,7 +167,7 @@ def TimeCheck():
         "Connection": "keep-alive",
         "Referer": "https://en.onlinesoccermanager.com/",
     }
-    time = eval((session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/timers", headers=headers).text).replace("false", "False").replace("true", "True").replace("null", "None"))
+    time = eval((session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/" + LeagueId + "/teams/" + TeamId + "/timers", headers=headers).text).replace("false", "False").replace("true", "True").replace("null", "None"))
     for i in range(0, len(time)):
         time[i]["currentTimestamp"] = datetime.fromtimestamp(time[i]["currentTimestamp"])
         time[i]["finishedTimestamp"] = datetime.fromtimestamp(time[i]["finishedTimestamp"]) 
@@ -180,7 +189,7 @@ def TimeCheck():
                             for l in lineup:
                                 if l["id"] == g["id"]:
                                     payload = "lineup=" + str(l["pos"])
-                                    data = session.put("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/players/"+ str(l["id"]) +"/lineup", headers=headers, data=payload)
+                                    data = session.put("https://web-api.onlinesoccermanager.com/api/v1/leagues/" + LeagueId + "/teams/" + TeamId + "/players/"+ str(l["id"]) +"/lineup", headers=headers, data=payload)
                                     break
                 else:
                     lineup = ""
@@ -225,7 +234,7 @@ def Train(playerId : int, position : int):
     }
     
     payload = "playerId=" + str(playerId) + "&trainer=" + str(position) + "&timerGameSettingId=20"
-    data = session.post("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions", headers=headers, data=payload)
+    data = session.post("https://web-api.onlinesoccermanager.com/api/v1/leagues/" + LeagueId + "/teams/" + TeamId + "/trainingsessions", headers=headers, data=payload)
     if data.status_code == 200:
         print("Training started")
     else:
@@ -246,14 +255,14 @@ def GetTrained():
         "Connection": "keep-alive",
         "Referer": "https://en.onlinesoccermanager.com/",
     }
-    data = session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions/ongoing", headers=headers).text
+    data = session.get("https://web-api.onlinesoccermanager.com/api/v1/leagues/"+ LeagueId +"/teams/" + TeamId + "/trainingsessions/ongoing", headers=headers).text
     if data == "":
         return 0    
     data = eval((data).replace("false", "False").replace("true", "True").replace("null", "None"))
     for n in data:
         if datetime.fromtimestamp(n["countdownTimer"]["finishedTimestamp"]) < datetime.now():
             print(n["countdownTimer"]["title"] + " finished")
-            data = session.put("https://web-api.onlinesoccermanager.com/api/v1/leagues/25826809/teams/18/trainingsessions/" + str(n["id"]) + "/claim", headers = headers)
+            data = session.put("https://web-api.onlinesoccermanager.com/api/v1/leagues/"+ LeagueId +"/teams/" + TeamId + "/trainingsessions/" + str(n["id"]) + "/claim", headers = headers)
 
 #sistemare
 def getChampionship():
@@ -273,18 +282,22 @@ def getChampionship():
         'Sec-Fetch-Site': 'same-site',
     }
     team = eval(((session.get("https://web-api.onlinesoccermanager.com/api/v1.1/users/" + userId + "?fields=Gdpr%2CEmail%2CTeamSlots%2CImages%2CStats", headers=headers)).text).replace("false", "False").replace("true", "True").replace("null", "None"))["teamSlots"]
+    TeamList = []
+    i = 0
     for t in team:
         if "team" in t:
-            print( t["team"]["name"])
+            i += 1
+            TeamList.append({"TeamId" : str(t["team"]["id"]), "LeagueId" : str(t["league"]["id"])})
+            print(str(i) +". " +t["team"]["name"])
+
+    print("Select team...")
+    select = int(input())
+    global TeamId
+    global LeagueId
+    TeamId = TeamList[select - 1]["TeamId"]
+    LeagueId = TeamList[select - 1]["LeagueId"]
 
     print()
-    # data = (session.get("https://web-api.onlinesoccermanager.com/api/v1.1/user?fields=teamslots%2Cemail%2Cprofile%2Cconnections", headers=headers).json())["teamSlots"]
-    # for team in data:
-    #     if "team" in team:
-    #         print(team["team"]["name"])
-            
-
-login("Frigge", "Nipotino04?")
 
 
 StartUp()
@@ -293,7 +306,7 @@ with open("Session.json", "r") as f:
     dataSession = json.load(f)
 if dataSession == "{}":
     login("Frigge", "Nipotino04?")
-elif not "cookies" in dataSession.keys() or not "access_token" in dataSession.keys() or  not "refresh_token" in dataSession.keys():
+elif not "cookies" in dataSession.keys() or not "access_token" in dataSession.keys() or  not "refresh_token" in dataSession.keys() or not "userId" in dataSession.keys():
     login("Frigge", "Nipotino04?")
 else:
     print("Session found!")
@@ -301,6 +314,7 @@ else:
         session.cookies.set(cookie['name'], cookie['value'])
     access_token = dataSession["access_token"]
     refreshtoken = dataSession["refresh_token"]
+    userId = dataSession["userId"]
 getChampionship()
 giocatori = getTeam()
 #getLineup()
