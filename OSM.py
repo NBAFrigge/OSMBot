@@ -60,9 +60,7 @@ def StartUp():
         Pwd = cred["password"]
     with open("Credential.json", 'w') as outfile:
         outfile.write(json.dumps(cred, indent = 4))
-    
-        
-  
+
 # OSM API
 def login(userName : str, password : str):
     options = webdriver.ChromeOptions()
