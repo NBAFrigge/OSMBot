@@ -335,9 +335,9 @@ else:
     userId = dataSession["userId"]
 getChampionship()
 giocatori = getTeam()
-#getLineup()
+getLineup()
 while 1:
-    #login(User, Pwd)
+    login(User, Pwd)
     TimeCheck()
     sleep(600)
 print()
